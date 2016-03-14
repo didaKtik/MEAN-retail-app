@@ -1,0 +1,44 @@
+{
+  "name": "app",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "check-credentials": "mocha ./tests/part1.js",
+    "test": "mocha --reporter nyan ./tests/test.js",
+    "watch": "gulp watch"
+  },
+  "dependencies": {
+    "body-parser": "*",
+    "cookie-parser": "*",
+    "debug": "*",
+    "express": "*",
+    "jade": "*",
+    "serve-favicon": "*",
+    "http-status": "*",
+    "underscore": "*",
+    "express-session": "*",
+    "mongoose": "*",
+    "passport": "*",
+    "passport-facebook": "*",
+    "stripe": "*",
+    "superagent": "*",
+    "wagner-core": "*",
+    "async": "*",
+    "mongodb": "*"
+  },
+  "devDependencies": {
+    "browserify": "*",
+    "chai": "*",
+    "gulp": "*",
+    "gulp-browserify": "*",
+    "gulp-live-server": "0.0.29",
+    "gulp-mocha": "*",
+    "karma": "*",
+    "karma-chai": "*",
+    "karma-chrome-launcher": "*",
+    "karma-mocha": "*",
+    "mocha": "*",
+    "morgan": "*"
+  }
+}
