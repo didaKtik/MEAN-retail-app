@@ -1,0 +1,7 @@
+<h1>Hello</h1>
+<div class="search-bar-wrapper">
+  <input type="text" ng-model="searchText" ng-change="update()" class="search-bar-input"></input>
+  <div ng-repeat="product in results">
+    <a ng-href="#/product/{{product.id}}" class="autocomplete-result">{{product.name}}</div>
+  </div>
+</div>
