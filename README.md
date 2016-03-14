@@ -4,7 +4,12 @@
 This application is written based on the examples given in the course [Introduction to MongoDB using the MEAN Stack](https://www.edx.org/course/introduction-mongodb-using-mean-stack-mongodbx-m101x).
 
 It features:
-- todo
+- Data storage with MongoDB and Mongoose as ODM.
+- Server configured with Node and Express.
+- User authentification with Facebook OAuth.
+- Front-end strucured with Angular.
+- Angular code written in Node.js style and automatically browserified.
+- Clear separation of concerns in the overall architecture: all the UI code is on the client-side, the server only provides API endpoints.
 
 ## Usage
 
