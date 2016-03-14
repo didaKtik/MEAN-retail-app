@@ -1,3 +1,5 @@
+var _ = require('underscore');
+
 exports.AddToCartController = function($scope, $http, $user, $timeout) {
   $scope.addToCart = function(product) {
     var obj = { product: product._id, quantity: 1 };
@@ -27,7 +29,15 @@ exports.CategoryProductsController = function($scope, $routeParams, $http) {
     } else {
       $scope.price = 0 - $scope.price;
     }
-    $scope.load();
+    if ($scope.products.length) {
+      $scope.sort();
+    }
+  };
+
+  $scope.sort = function() {
+    $scope.products = _.sortBy($scope.products, function(product) {
+      return $scope.price * product.price.amount;
+    });
   };
 
   $scope.load = function() {
@@ -39,7 +49,9 @@ exports.CategoryProductsController = function($scope, $routeParams, $http) {
       });
   };
 
-  $scope.load();
+  if ($routeParams.category) {
+    $scope.load();
+  }
 
   setTimeout(function() {
     $scope.$emit('CategoryProductsController');
@@ -47,7 +59,8 @@ exports.CategoryProductsController = function($scope, $routeParams, $http) {
 };
 
 exports.CategoryTreeController = function($scope, $routeParams, $http) {
-  var encoded = encodeURIComponent($routeParams.category);
+  var category = $routeParams.category || 'Electronics';
+  var encoded = encodeURIComponent(category);
   $http.
     get('/api/v1/category/id/' + encoded).
     success(function(data) {
@@ -127,20 +140,26 @@ exports.ProductDetailsController = function($scope, $routeParams, $http) {
 };
 
 exports.SearchBarController = function($scope, $http) {
-  // TODO: this function should make an HTTP request to
-  // `/api/v1/product/text/:searchText` and expose the response's
-  // `products` property as `results` to the scope.
   $scope.searchText = '';
-  $scope.results = [];
-  $scope.update = function() {
-    $http.
-      get('/api/v1/product/text/' + $scope.searchText).
-      success(function(data) {
-        $scope.results = data.products;
-      });
+  // $scope.products = [];
+  $scope.search = function() {
+    if ($scope.searchText) {
+      $http.
+        get('/api/v1/product/text/' + $scope.searchText).
+        success(function(data) {
+          $scope.products = data.products;
+          $scope.searchText = '';
+          window.location = '#';
+        });
+    }
   };
 
   setTimeout(function() {
     $scope.$emit('SearchBarController');
   }, 0);
+};
+
+exports.StoreViewController = function($scope) {
+  // As it is defined here, it will be shared by the children controllers
+  $scope.products = [];
 };

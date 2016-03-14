@@ -1638,6 +1638,8 @@ module.exports = {
 }.call(this));
 
 },{}],3:[function(require,module,exports){
+var _ = require('underscore');
+
 exports.AddToCartController = function($scope, $http, $user, $timeout) {
   $scope.addToCart = function(product) {
     var obj = { product: product._id, quantity: 1 };
@@ -1667,7 +1669,15 @@ exports.CategoryProductsController = function($scope, $routeParams, $http) {
     } else {
       $scope.price = 0 - $scope.price;
     }
-    $scope.load();
+    if ($scope.products.length) {
+      $scope.sort();
+    }
+  };
+
+  $scope.sort = function() {
+    $scope.products = _.sortBy($scope.products, function(product) {
+      return $scope.price * product.price.amount;
+    });
   };
 
   $scope.load = function() {
@@ -1679,7 +1689,9 @@ exports.CategoryProductsController = function($scope, $routeParams, $http) {
       });
   };
 
-  $scope.load();
+  if ($routeParams.category) {
+    $scope.load();
+  }
 
   setTimeout(function() {
     $scope.$emit('CategoryProductsController');
@@ -1687,7 +1699,8 @@ exports.CategoryProductsController = function($scope, $routeParams, $http) {
 };
 
 exports.CategoryTreeController = function($scope, $routeParams, $http) {
-  var encoded = encodeURIComponent($routeParams.category);
+  var category = $routeParams.category || 'Electronics';
+  var encoded = encodeURIComponent(category);
   $http.
     get('/api/v1/category/id/' + encoded).
     success(function(data) {
@@ -1767,17 +1780,18 @@ exports.ProductDetailsController = function($scope, $routeParams, $http) {
 };
 
 exports.SearchBarController = function($scope, $http) {
-  // TODO: this function should make an HTTP request to
-  // `/api/v1/product/text/:searchText` and expose the response's
-  // `products` property as `results` to the scope.
   $scope.searchText = '';
-  $scope.results = [];
-  $scope.update = function() {
-    $http.
-      get('/api/v1/product/text/' + $scope.searchText).
-      success(function(data) {
-        $scope.results = data.products;
-      });
+  // $scope.products = [];
+  $scope.search = function() {
+    if ($scope.searchText) {
+      $http.
+        get('/api/v1/product/text/' + $scope.searchText).
+        success(function(data) {
+          $scope.products = data.products;
+          $scope.searchText = '';
+          window.location = '#';
+        });
+    }
   };
 
   setTimeout(function() {
@@ -1785,7 +1799,12 @@ exports.SearchBarController = function($scope, $http) {
   }, 0);
 };
 
-},{}],4:[function(require,module,exports){
+exports.StoreViewController = function($scope) {
+  // As it is defined here, it will be shared by the children controllers
+  $scope.products = [];
+};
+
+},{"underscore":2}],4:[function(require,module,exports){
 exports.addToCart = function() {
   return {
     controller: 'AddToCartController',
@@ -1835,6 +1854,13 @@ exports.searchBar = function() {
   };
 };
 
+exports.storeView = function() {
+  return {
+    controller: 'StoreViewController',
+    templateUrl: '/templates/store_view.html'
+  };
+};
+
 },{}],5:[function(require,module,exports){
 var controllers = require('./controllers');
 var directives = require('./directives');
@@ -1863,9 +1889,7 @@ var app = angular.module('mean-retail', ['mean-retail.components', 'ngRoute']);
 app.config(function($routeProvider) {
   $routeProvider.
     when('/category/:category', {
-      // Why a url here? Because the categoryView is not registered as a directive,
-      // it is just the <category-tree> + <category-product>
-      templateUrl: '/templates/category_view.html'
+      template: '<store-view></store-view>'
     }).
     when('/checkout', {
       template: '<checkout></checkout>'
@@ -1874,7 +1898,7 @@ app.config(function($routeProvider) {
       template: '<product-details></product-details>'
     }).
     when('/', {
-      template: '<search-bar></search-bar>'
+      template: '<store-view></store-view>'
     });
 });
 

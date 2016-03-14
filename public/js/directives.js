@@ -46,3 +46,10 @@ exports.searchBar = function() {
     templateUrl: '/templates/search_bar.html'
   };
 };
+
+exports.storeView = function() {
+  return {
+    controller: 'StoreViewController',
+    templateUrl: '/templates/store_view.html'
+  };
+};

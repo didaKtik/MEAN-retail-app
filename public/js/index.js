@@ -25,9 +25,7 @@ var app = angular.module('mean-retail', ['mean-retail.components', 'ngRoute']);
 app.config(function($routeProvider) {
   $routeProvider.
     when('/category/:category', {
-      // Why a url here? Because the categoryView is not registered as a directive,
-      // it is just the <category-tree> + <category-product>
-      templateUrl: '/templates/category_view.html'
+      template: '<store-view></store-view>'
     }).
     when('/checkout', {
       template: '<checkout></checkout>'
@@ -36,6 +34,6 @@ app.config(function($routeProvider) {
       template: '<product-details></product-details>'
     }).
     when('/', {
-      template: '<search-bar></search-bar>'
+      template: '<store-view></store-view>'
     });
 });
